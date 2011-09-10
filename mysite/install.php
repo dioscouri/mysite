@@ -34,14 +34,14 @@ $status->templates = array();
  * // TEMPLATES INSTALLATION SECTION 
  * ---------------------------------------------------------------------------------------------
  ***********************************************************************************************/
-$templates = $dscinstaller->getElementByPath( 'templates' );
-if (is_a($templates, 'JSimpleXMLElement') && count($templates->children())) {
+$templates = $dscinstaller->getElementByPath('templates');
+if ( (is_a($templates, 'JSimpleXMLElement') || is_a( $templates, 'JXMLElement')) && !empty( $templates ) && count($templates->children())) {
 
 	foreach ($templates->children() as $template)
 	{
-		$mname		= $template->attributes('template');
-		$mpublish	= $template->attributes('publish');
-		$mclient	= JApplicationHelper::getClientInfo($template->attributes('client'), true);
+		$mname		= $template->getAttribute('template');
+		$mpublish	= $template->getAttribute('publish');
+		$mclient	= JApplicationHelper::getClientInfo($template->getAttribute('client'), true);
 		
 		// Set the installation path
 		if (!empty ($mname)) {
@@ -84,14 +84,14 @@ if (is_a($templates, 'JSimpleXMLElement') && count($templates->children())) {
  ***********************************************************************************************/
 
 $modules = $dscinstaller->getElementByPath('modules');
-if (is_a($modules, 'JSimpleXMLElement') && count($modules->children())) {
+if ( (is_a($modules, 'JSimpleXMLElement') || is_a( $modules, 'JXMLElement')) && !empty( $modules ) && count($modules->children())) {
 
 	foreach ($modules->children() as $module)
 	{
-		$mname		= $module->attributes('module');
-		$mpublish	= $module->attributes('publish');
-		$mposition	= $module->attributes('position');
-		$mclient	= JApplicationHelper::getClientInfo($module->attributes('client'), true);
+		$mname		= $module->getAttribute('module');
+		$mpublish	= $module->getAttribute('publish');
+		$mposition	= $module->getAttribute('position');
+		$mclient	= JApplicationHelper::getClientInfo($module->getAttribute('client'), true);
 		
 		// Set the installation path
 		if (!empty ($mname)) {
@@ -109,7 +109,7 @@ if (is_a($modules, 'JSimpleXMLElement') && count($modules->children())) {
 		if ($mpublish) {
 			$dscInstaller->set( '_publishExtension', true );
 		}
-		$result = $dscInstaller->installExtension($pathToFolder, 'folder');
+		$result = $dscInstaller->installExtension($pathToFolder, 'folder', $mname);
 		
 		// track the message and status of installation from dscInstaller
 		if ($result) 
@@ -119,7 +119,13 @@ if (is_a($modules, 'JSimpleXMLElement') && count($modules->children())) {
 			{
 				// set the position of the module
 				$database = JFactory::getDBO();
-				$query = "UPDATE #__modules SET `position` = '{$mposition}' WHERE `module` = '{$mname}';";
+			    if(version_compare(JVERSION,'1.6.0','ge')) {
+                    // Joomla! 1.6+ code here
+                    $query = "UPDATE #__extensions SET `position` = '$mposition' WHERE `type` = 'module' AND `element` = '".$mname."'";
+                } else {
+                    // Joomla! 1.5 code here
+                    $query = "UPDATE #__modules SET `position` = '{$mposition}' WHERE `module` = '{$mname}';";
+                }				
 				$database->setQuery($query);
 				$database->query();
 			}
@@ -144,13 +150,15 @@ if (is_a($modules, 'JSimpleXMLElement') && count($modules->children())) {
  ***********************************************************************************************/
 
 $plugins = $dscinstaller->getElementByPath('plugins');
-if (is_a($plugins, 'JSimpleXMLElement') && count($plugins->children())) {
+//echo "<pre>"; print_r( $plugins ); echo "</pre>";
+if ( (is_a($plugins, 'JSimpleXMLElement') || is_a( $plugins, 'JXMLElement')) && !empty( $plugins ) && count($plugins->children())) {
 
 	foreach ($plugins->children() as $plugin)
 	{
-		$pname		= $plugin->attributes('plugin');
-		$ppublish	= $plugin->attributes('publish');
-		$pgroup		= $plugin->attributes('group');
+		$pname		= $plugin->getAttribute('plugin');
+		$ppublish	= $plugin->getAttribute('publish');
+		$pgroup		= $plugin->getAttribute('group');
+		$name		= $plugin->getAttribute('element');
 		
 		// Set the installation path
 		if (!empty($pname) && !empty($pgroup)) {
@@ -168,7 +176,7 @@ if (is_a($plugins, 'JSimpleXMLElement') && count($plugins->children())) {
 		if ($ppublish) {
 			$dscInstaller->set( '_publishExtension', true );
 		}
-		$result = $dscInstaller->installExtension($pathToFolder, 'folder');
+		$result = $dscInstaller->installExtension($pathToFolder, 'folder', $name);
 		
 		// track the message and status of installation from dscInstaller
 		if ($result) {

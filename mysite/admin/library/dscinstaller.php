@@ -10,6 +10,7 @@ jimport('joomla.filesystem.archive');
 jimport('joomla.filesystem.path');
 jimport('joomla.installer.installer' );
 jimport('joomla.installer.helper' );
+jimport('joomla.registry.format');
 
 /** CHECK FIRST to see if this exists already */
 if (!class_exists( 'dscInstaller' )) {
@@ -262,7 +263,7 @@ if (!class_exists( 'dscInstaller' )) {
 		 * @param $file String the filename of the file to be installed
 		 * @return the extension information if the install is successfull, false otherwise
 		 */
-		function installExtension($entry, $entryType='archive') 
+		function installExtension($entry, $entryType='archive', $name=null )
 		{
             switch(strtolower($entryType))
 			{
@@ -301,7 +302,7 @@ if (!class_exists( 'dscInstaller' )) {
 			}
 	
 			//grab the manifest information
-			$manifestInformation = $this->getManifestInformation($installer);
+			$manifestInformation = $this->getManifestInformation($installer, $name);
             $savedParameters = new stdClass(); 
 			
 			//check if the extension is installed already and if so uninstall it
@@ -327,7 +328,7 @@ if (!class_exists( 'dscInstaller' )) {
 				$result = false;
 			} else {
 				// Package installed sucessfully so publish the extension if set to yes
-				$manifestInformation = $this->getManifestInformation($installer);
+				$manifestInformation = $this->getManifestInformation($installer, $name);
 				$publishExtension = $this->get( '_publishExtension', false );
 
 				if ($publishExtension)
@@ -501,13 +502,31 @@ if (!class_exists( 'dscInstaller' )) {
 	        //select the right query based on the manifest information
 	        switch ($manifestInformation["type"]) {
 	            case "component":
-	                $query = "SELECT `id` FROM #__components WHERE `option` = '".$manifestInformation["element"]."'";
+	            	if(version_compare(JVERSION,'1.6.0','ge')) {
+                        // Joomla! 1.6+ code here
+                        $query = "SELECT `extension_id` AS id FROM #__extensions WHERE `type` = 'component' AND `element` = '".$manifestInformation["element"]."'";
+                    } else {
+                        // Joomla! 1.5 code here
+                        $query = "SELECT `id` FROM #__components WHERE `option` = '".$manifestInformation["element"]."'";
+                    }
 	                break;
 	            case "module":
-	                $query = "SELECT `id` FROM #__modules WHERE `module` = '".$manifestInformation["element"]."'";
+	        	    if(version_compare(JVERSION,'1.6.0','ge')) {
+                        // Joomla! 1.6+ code here
+                        $query = "SELECT `extension_id` AS id FROM #__extensions WHERE `type` = 'module' AND `element` = '".$manifestInformation["element"]."'";
+                    } else {
+                        // Joomla! 1.5 code here
+                        $query = "SELECT `id` FROM #__modules WHERE `module` = '".$manifestInformation["element"]."'";
+                    }	                
 	                break;
 	            case "plugin":
-	                $query = "SELECT `id` FROM #__plugins WHERE `folder` = '".$manifestInformation["group"]."' AND `element` = '".$manifestInformation["element"]."'";
+	        	    if(version_compare(JVERSION,'1.6.0','ge')) {
+                        // Joomla! 1.6+ code here
+                        $query = "SELECT `extension_id` AS id FROM #__extensions WHERE `type` = 'plugin' AND `folder` = '".$manifestInformation["group"]."' AND `element` = '".$manifestInformation["element"]."'";
+                    } else {
+                        // Joomla! 1.5 code here
+                        $query = "SELECT `id` FROM #__plugins WHERE `folder` = '".$manifestInformation["group"]."' AND `element` = '".$manifestInformation["element"]."'";
+                    }
 	                break;
 	            default:
 	                $query = "";
@@ -543,32 +562,32 @@ if (!class_exists( 'dscInstaller' )) {
 		 * @param $installer JInstaller object setup to install an extension
 		 * @return Array manifestInformation([type],[group],[element])
 		 */
-		function getManifestInformation($installer) {
+		function getManifestInformation($installer, $element=null) {
 			// Get the extension manifest object
 			$manifest =& $installer->getManifest();
 			$manifestFile =& $manifest->document;
-	
+
 			//final information that we need about the extension
-			$type = $manifestFile->attributes('type');
+			$type = $manifest->getAttribute('type');
 	
 			//check to see if the type is component
 			if(strcasecmp($type, "component") == 0) {
 	
 				// Set the extensions name
-				$name =& $manifestFile->getElementByPath('name');
-				$name = JFilterInput::clean($name->data(), 'cmd');
+				$name = $this->getElementByPath('name', $manifest);
+				//$name = JFilterInput::clean($name->data(), 'cmd');
 				$elementName = $name;
 			} else {
 				//otherwise it is a plugin or module
-				$group = $manifestFile->attributes('group');
+				$group = $manifest->getAttribute('group');
 	
-				$name =& $manifestFile->getElementByPath('name');
-				$name = JFilterInput::clean($name->data(), 'string');
+				$name = $this->getElementByPath('name', $manifest);
+				//$name = JFilterInput::clean($name->data(), 'string');
 	
 				//find the actual element name for the database
-				$element =& $manifestFile->getElementByPath('files');
-				if (is_a($element, 'JSimpleXMLElement') && count($element->children())) {
-					$files =& $element->children();
+                $file_element = $this->getElementByPath('files', $manifest);
+				if (is_a($file_element, 'JSimpleXMLElement') && count($file_element->children())) {
+					$files =& $file_element->children();
 					foreach ($files as $file) {
 						if ($file->attributes($type)) {
 							$elementName = $file->attributes($type);
@@ -582,7 +601,7 @@ if (!class_exists( 'dscInstaller' )) {
 			$manifestInformation = array();
 			$manifestInformation["type"] = @$type;
 			$manifestInformation["group"] = @$group;
-			$manifestInformation["element"] = @$elementName;
+			$manifestInformation["element"] = !empty($element) ? $element : $elementName;
 	
 			return $manifestInformation;
 		}
@@ -600,17 +619,35 @@ if (!class_exists( 'dscInstaller' )) {
             //select the right query based on the manifest information
             switch ($manifestInformation["type"]) {
                 case "component":
-                    $query = "SELECT `enabled`,`params` FROM `#__components`".
-                            " WHERE `name` = '".$this->_db->getEscaped($manifestInformation["element"])."'";
+            	    if(version_compare(JVERSION,'1.6.0','ge')) {
+                        // Joomla! 1.6+ code here
+                        $query = "SELECT `enabled`,`params` FROM #__extensions WHERE `type` = 'component' AND `element` = '".$manifestInformation["element"]."'";
+                    } else {
+                        // Joomla! 1.5 code here
+                        $query = "SELECT `enabled`,`params` FROM `#__components`".
+                            " WHERE `option` = '".$this->_db->getEscaped($manifestInformation["element"])."'";
+                    }
                     break;
                 case "module":
-                    $query = "SELECT `access`,`published`,`params` FROM `#__modules`".
-                            " WHERE `module` = '".$this->_db->getEscaped($manifestInformation["element"])."'";
+            	    if(version_compare(JVERSION,'1.6.0','ge')) {
+                        // Joomla! 1.6+ code here
+                        $query = "SELECT `access`,`enabled`,`params` FROM #__extensions WHERE `type` = 'module' AND `element` = '".$manifestInformation["element"]."'";
+                    } else {
+                        // Joomla! 1.5 code here
+                        $query = "SELECT `access`,`published`,`params` FROM `#__modules`".
+                                " WHERE `module` = '".$this->_db->getEscaped($manifestInformation["element"])."'";
+                    }
                     break;
                 case "plugin":
-                    $query = "SELECT `access`,`published`,`params` FROM `#__plugins`".
-                            " WHERE `folder` = '".$this->_db->getEscaped($manifestInformation["group"])."' &&  ".
-                            "`element` = '".$this->_db->getEscaped($manifestInformation["element"])."'";
+            	    if(version_compare(JVERSION,'1.6.0','ge')) {
+                        // Joomla! 1.6+ code here
+                        $query = "SELECT `access`,`enabled`,`params` FROM #__extensions WHERE `type` = 'plugin' AND `folder` = '".$manifestInformation["group"]."' AND `element` = '".$manifestInformation["element"]."'";
+                    } else {
+                        // Joomla! 1.5 code here
+                        $query = "SELECT `access`,`published`,`params` FROM `#__plugins`".
+                                " WHERE `folder` = '".$this->_db->getEscaped($manifestInformation["group"])."' &&  ".
+                                "`element` = '".$this->_db->getEscaped($manifestInformation["element"])."'";
+                    }
                     break;
                 default:
                     $query = "";
@@ -637,20 +674,35 @@ if (!class_exists( 'dscInstaller' )) {
             // Load the new settings
             switch ($manifestInformation["type"]) {
                 case "component":
-                    $qry_load = "SELECT * FROM `#__components`".
-                                " WHERE `name` = '".$this->_db->getEscaped($manifestInformation["element"])."'";
-                    
+            	    if(version_compare(JVERSION,'1.6.0','ge')) {
+                        // Joomla! 1.6+ code here
+                        $qry_load = "SELECT * FROM #__extensions WHERE `type` = 'component' AND `element` = '".$manifestInformation["element"]."'";
+                    } else {
+                        // Joomla! 1.5 code here
+                        $qry_load = "SELECT * FROM `#__components`".
+                                    " WHERE `name` = '".$this->_db->getEscaped($manifestInformation["element"])."'";
+                    }
                     break;
                 case "module":
-                    $qry_load = "SELECT * FROM `#__modules`".
-                                " WHERE `module` = '".$this->_db->getEscaped($manifestInformation["element"])."'";
-                    
+                    if(version_compare(JVERSION,'1.6.0','ge')) {
+                        // Joomla! 1.6+ code here
+                        $qry_load = "SELECT * FROM #__extensions WHERE `type` = 'module' AND `element` = '".$manifestInformation["element"]."'";
+                    } else {
+                        // Joomla! 1.5 code here
+                        $qry_load = "SELECT * FROM `#__modules`".
+                                    " WHERE `module` = '".$this->_db->getEscaped($manifestInformation["element"])."'";
+                    }
                     break;
                 case "plugin":
-                    $qry_load = "SELECT * FROM `#__plugins`".
-                                " WHERE `folder` = '".$this->_db->getEscaped($manifestInformation["group"])."' && ".
-                                "`element` = '".$this->_db->getEscaped($manifestInformation["element"])."'";
-                    
+            	    if(version_compare(JVERSION,'1.6.0','ge')) {
+                        // Joomla! 1.6+ code here
+                        $qry_load = "SELECT * FROM #__extensions WHERE `type` = 'plugin' AND `folder` = '".$manifestInformation["group"]."' AND `element` = '".$manifestInformation["element"]."'";
+                    } else {
+                        // Joomla! 1.5 code here
+                        $qry_load = "SELECT * FROM `#__plugins`".
+                                    " WHERE `folder` = '".$this->_db->getEscaped($manifestInformation["group"])."' && ".
+                                    "`element` = '".$this->_db->getEscaped($manifestInformation["element"])."'";
+                    }
                     break;
                 default:
                     return;
@@ -666,41 +718,73 @@ if (!class_exists( 'dscInstaller' )) {
             // params: merge (older is more important than defaut new)
             
             // Converting to Object Format
-            $new_params = JRegistryFormatINI::stringToObject($obj->params);
-            $old_params = JRegistryFormatINI::stringToObject($savedParameters->params);
+            $jregistryformat = JRegistryFormat::getInstance('ini'); 
+            $new_params = $jregistryformat->stringToObject($obj->params);
+            $old_params = $jregistryformat->stringToObject($savedParameters->params);
             
             $old_params = (object) array_merge((array) $new_params, (array) $old_params);
             
             // Converting back to INI format
-            $savedParameters->params = JRegistryFormatINI::objectToString($old_params, '');
+            $savedParameters->params = $jregistryformat->objectToString($old_params, '');
             
             
             // Save the merged new / old settings
             switch ($manifestInformation["type"]) {
                 case "component":
-                    $qry_save = "UPDATE `#__components` SET ".
-                                "`enabled`=".intval($savedParameters->enabled).", ".
-                                "`params` = '".$this->_db->getEscaped($savedParameters->params)."'".
-                                " WHERE `name` = '".$manifestInformation["element"]."'";
-                    
+                    if(version_compare(JVERSION,'1.6.0','ge')) {
+                        // Joomla! 1.6+ code here
+                        $qry_save = "UPDATE `#__extensions` SET ".
+                                    "`enabled` = ".intval($savedParameters->enabled).", ".
+                                    "`params` = '".$this->_db->getEscaped($savedParameters->params)."'".
+                                    " WHERE `element` = '".$manifestInformation["element"]."'" .
+                        			" AND `type` = 'component'";
+                    } else {
+                        // Joomla! 1.5 code here
+                        $qry_save = "UPDATE `#__components` SET ".
+                                    "`enabled`=".intval($savedParameters->enabled).", ".
+                                    "`params` = '".$this->_db->getEscaped($savedParameters->params)."'".
+                                    " WHERE `option` = '".$manifestInformation["element"]."'";
+                    }
                     break;
                 
                 case "module":
-                    $qry_save = "UPDATE `#__modules` SET ".
-                                "`access` = ".intval($savedParameters->access).", ".
-                                "`published` = ".intval($savedParameters->published).", ".
-                                "`params` = '".$this->_db->getEscaped($savedParameters->params)."'".
-                                " WHERE `module` = '".$this->_db->getEscaped($manifestInformation["element"])."'";
-                
+                    if(version_compare(JVERSION,'1.6.0','ge')) {
+                        // Joomla! 1.6+ code here
+                        $qry_save = "UPDATE `#__extensions` SET ".
+                                    "`access` = ".intval($savedParameters->access).", ".
+                        			"`enabled` = ".intval($savedParameters->enabled).", ".
+                                    "`params` = '".$this->_db->getEscaped($savedParameters->params)."'".
+                                    " WHERE `element` = '".$manifestInformation["element"]."'" .
+                        			" AND `type` = 'module'";
+                    } else {
+                        // Joomla! 1.5 code here
+                        $qry_save = "UPDATE `#__modules` SET ".
+                                    "`access` = ".intval($savedParameters->access).", ".
+                                    "`published` = ".intval($savedParameters->published).", ".
+                                    "`params` = '".$this->_db->getEscaped($savedParameters->params)."'".
+                                    " WHERE `module` = '".$this->_db->getEscaped($manifestInformation["element"])."'";
+                    }
                     break;
                     
                 case "plugin":
-                    $qry_save = "UPDATE `#__plugins` SET ".
-                                "`access` = ".intval($savedParameters->access).", ".
-                                "`published` = ".intval($savedParameters->published).", ".
-                                "`params` = '".$this->_db->getEscaped($savedParameters->params)."'".
-                                " WHERE `folder` = '".$this->_db->getEscaped($manifestInformation["group"])."' && ".
-                                "`element` = '".$this->_db->getEscaped($manifestInformation["element"])."'";
+                    if(version_compare(JVERSION,'1.6.0','ge')) {
+                        // Joomla! 1.6+ code here
+                        $qry_save = "UPDATE `#__extensions` SET ".
+                                    "`access` = ".intval($savedParameters->access).", ".
+                        			"`enabled` = ".intval($savedParameters->enabled).", ".
+                                    "`params` = '".$this->_db->getEscaped($savedParameters->params)."'".
+                                    " WHERE `element` = '".$manifestInformation["element"]."'" .
+                        			" AND `folder` = '".$this->_db->getEscaped($manifestInformation["group"])."'".
+                        			" AND `type` = 'plugin'";
+                    } else {
+                        // Joomla! 1.5 code here
+                        $qry_save = "UPDATE `#__plugins` SET ".
+                                    "`access` = ".intval($savedParameters->access).", ".
+                                    "`published` = ".intval($savedParameters->published).", ".
+                                    "`params` = '".$this->_db->getEscaped($savedParameters->params)."'".
+                                    " WHERE `folder` = '".$this->_db->getEscaped($manifestInformation["group"])."' && ".
+                                    "`element` = '".$this->_db->getEscaped($manifestInformation["element"])."'";
+                    }
                     break;
                 default:
                     return;
@@ -739,19 +823,39 @@ if (!class_exists( 'dscInstaller' )) {
 				case "component":
 					//components auto publish but check if any should be unplublished
 					if (in_array($manifestInformation["element"], $this->_doNotPublishList)) {
-						$query = "UPDATE #__components SET `enabled` = '0' WHERE `name` = '".$manifestInformation["element"]."'";
+						if(version_compare(JVERSION,'1.6.0','ge')) {
+                            // Joomla! 1.6+ code here
+                            $query = "UPDATE #__extensions SET `enabled` = '0' WHERE `type` = 'component' AND `element` = '".$manifestInformation["element"]."'";
+                        } else {
+                            // Joomla! 1.5 code here
+                            $query = "UPDATE #__components SET `enabled` = '0' WHERE `option` = '".$manifestInformation["element"]."'";
+                        }
 					}
 					break;
 				case "module":
 					//check to make sure the extension should be auto published
 					if (!in_array($manifestInformation["element"], $this->_doNotPublishList)) {
-						$query = "UPDATE #__modules SET `published` = '1' WHERE `module` = '".$manifestInformation["element"]."'";
+						if(version_compare(JVERSION,'1.6.0','ge')) {
+                            // Joomla! 1.6+ code here
+                            $query = "UPDATE #__extensions SET `enabled` = '1' WHERE `type` = 'module' AND `element` = '".$manifestInformation["element"]."'";
+                        } else {
+                            // Joomla! 1.5 code here
+                            $query = "UPDATE #__modules SET `published` = '1' WHERE `module` = '".$manifestInformation["element"]."'";
+                        }
+						
 					}
 					break;
 				case "plugin":
 					//check to make sure the extension should be auto published
 					if (!in_array($manifestInformation["element"], $this->_doNotPublishList)) {
-						$query = "UPDATE #__plugins SET `published` = '1' WHERE `folder` = '".$manifestInformation["group"]."' AND `element` = '".$manifestInformation["element"]."'";
+						if(version_compare(JVERSION,'1.6.0','ge')) {
+                            // Joomla! 1.6+ code here
+                            $query = "UPDATE #__extensions SET `enabled` = '1' WHERE `type` = 'plugin' AND `folder` = '".$manifestInformation["group"]."' AND `element` = '".$manifestInformation["element"]."'";
+                        } else {
+                            // Joomla! 1.5 code here
+                            $query = "UPDATE #__plugins SET `published` = '1' WHERE `folder` = '".$manifestInformation["group"]."' AND `element` = '".$manifestInformation["element"]."'";
+                        }
+						
 					}
 					break;
 				default:
@@ -923,15 +1027,17 @@ if (!class_exists( 'dscInstaller' )) {
 		 * @param unknown_type $path
 		 * @return return_type
 		 */
-		function getElementByPath( $path ) 
+		function getElementByPath( $path, $manifest=null ) 
 		{
 		    $return = null;
+		    if (empty($manifest)) { $manifest = $this->manifest; }
+		    
     		if(version_compare(JVERSION,'1.6.0','ge')) {
                 // Joomla! 1.6+ code here
-                $return = $this->manifest->templates;
+                $return = $manifest->$path;
             } else {
                 // Joomla! 1.5 code here
-                $return = $this->manifest->getElementByPath('templates');
+                $return = $manifest->getElementByPath( $path );
             }
             return $return;
 		}
