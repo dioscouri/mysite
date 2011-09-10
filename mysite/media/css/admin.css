@@ -79,17 +79,7 @@ td img { vertical-align: middle; }
 .note_pink  { background-color: #FDE8FD; }
 .note_green { background-color: #EBF6DF; }
 
-/** custom **/
-.label {
-	margin-top: 5px;
-	margin-bottom: 5px;
-	margin-right: 5px;
-	font-weight: bold;
+form fieldset label {
+    clear: none;
+    margin: 5px 10px 5px 0px;
 }
-
-.addresslist
-{
-    list-style: none;
-    padding: 0;
-    margin: 0;
-} 
