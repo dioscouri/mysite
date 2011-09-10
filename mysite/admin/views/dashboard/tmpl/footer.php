@@ -22,7 +22,7 @@
 			<a href="http://extensions.joomla.org/extensions/owner/dioscouri" target="_blank"><?php echo JText::_( "Leave JED Feedback" ); ?></a>
 		</td>
 		<td style="text-align: center; width: 33%;">
-			<?php echo JText::_( "Mysite" ); ?>: <?php echo JText::_( "Mysite Desc" ); ?>
+			<?php echo JText::_( "Mysite" ); ?>: <?php echo JText::_( "Mysite_Desc" ); ?>
 			<br/>
 			<?php echo JText::_( "Copyright" ); ?>: <?php echo Mysite::getCopyrightYear(); ?> &copy; <a href="<?php echo $url; ?>" target="_blank">Dioscouri Design</a>
 			<br/>
