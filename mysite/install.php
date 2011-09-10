@@ -39,9 +39,9 @@ if ( (is_a($templates, 'JSimpleXMLElement') || is_a( $templates, 'JXMLElement'))
 
 	foreach ($templates->children() as $template)
 	{
-		$mname		= $template->getAttribute('template');
-		$mpublish	= $template->getAttribute('publish');
-		$mclient	= JApplicationHelper::getClientInfo($template->getAttribute('client'), true);
+		$mname		= $dscinstaller->getAttribute('template', $template);
+		$mpublish	= $dscinstaller->getAttribute('publish', $template);
+		$mclient	= JApplicationHelper::getClientInfo($dscinstaller->getAttribute('client', $template), true);
 		
 		// Set the installation path
 		if (!empty ($mname)) {
@@ -88,10 +88,10 @@ if ( (is_a($modules, 'JSimpleXMLElement') || is_a( $modules, 'JXMLElement')) && 
 
 	foreach ($modules->children() as $module)
 	{
-		$mname		= $module->getAttribute('module');
-		$mpublish	= $module->getAttribute('publish');
-		$mposition	= $module->getAttribute('position');
-		$mclient	= JApplicationHelper::getClientInfo($module->getAttribute('client'), true);
+		$mname		= $dscinstaller->getAttribute('module', $module);
+		$mpublish	= $dscinstaller->getAttribute('publish', $module);
+		$mposition	= $dscinstaller->getAttribute('position', $module);
+		$mclient	= JApplicationHelper::getClientInfo($dscinstaller->getAttribute('client', $module), true);
 		
 		// Set the installation path
 		if (!empty ($mname)) {
@@ -150,15 +150,14 @@ if ( (is_a($modules, 'JSimpleXMLElement') || is_a( $modules, 'JXMLElement')) && 
  ***********************************************************************************************/
 
 $plugins = $dscinstaller->getElementByPath('plugins');
-//echo "<pre>"; print_r( $plugins ); echo "</pre>";
 if ( (is_a($plugins, 'JSimpleXMLElement') || is_a( $plugins, 'JXMLElement')) && !empty( $plugins ) && count($plugins->children())) {
 
 	foreach ($plugins->children() as $plugin)
 	{
-		$pname		= $plugin->getAttribute('plugin');
-		$ppublish	= $plugin->getAttribute('publish');
-		$pgroup		= $plugin->getAttribute('group');
-		$name		= $plugin->getAttribute('element');
+		$pname		= $dscinstaller->getAttribute('plugin', $plugin);
+		$ppublish	= $dscinstaller->getAttribute('publish', $plugin);
+		$pgroup		= $dscinstaller->getAttribute('group', $plugin);
+		$name		= $dscinstaller->getAttribute('element', $plugin);
 		
 		// Set the installation path
 		if (!empty($pname) && !empty($pgroup)) {

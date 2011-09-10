@@ -565,27 +565,27 @@ if (!class_exists( 'dscInstaller' )) {
 		function getManifestInformation($installer, $element=null) {
 			// Get the extension manifest object
 			$manifest =& $installer->getManifest();
-			$manifestFile =& $manifest->document;
+			$manifestFile = $this->getManifestFile( $manifest );
 
 			//final information that we need about the extension
-			$type = $manifest->getAttribute('type');
+			$type = $this->getAttribute('type', $manifestFile);
 	
 			//check to see if the type is component
 			if(strcasecmp($type, "component") == 0) {
 	
 				// Set the extensions name
-				$name = $this->getElementByPath('name', $manifest);
+				$name = $this->getElementByPath('name', $manifestFile);
 				//$name = JFilterInput::clean($name->data(), 'cmd');
 				$elementName = $name;
 			} else {
 				//otherwise it is a plugin or module
-				$group = $manifest->getAttribute('group');
+				$group = $this->getAttribute('group', $manifestFile);
 	
-				$name = $this->getElementByPath('name', $manifest);
+				$name = $this->getElementByPath('name', $manifestFile);
 				//$name = JFilterInput::clean($name->data(), 'string');
 	
 				//find the actual element name for the database
-                $file_element = $this->getElementByPath('files', $manifest);
+                $file_element = $this->getElementByPath('files', $manifestFile);
 				if (is_a($file_element, 'JSimpleXMLElement') && count($file_element->children())) {
 					$files =& $file_element->children();
 					foreach ($files as $file) {
@@ -1074,5 +1074,42 @@ if (!class_exists( 'dscInstaller' )) {
     			}
     		}
     	}
+    	
+    	/**
+		 * 
+		 * Enter description here ...
+		 * @param unknown_type $path
+		 * @return return_type
+		 */
+		function getAttribute( $name, $element ) 
+		{
+		    $return = null;
+    		if(version_compare(JVERSION,'1.6.0','ge')) {
+                // Joomla! 1.6+ code here
+                $return = $element->getAttribute( $name );
+            } else {
+                // Joomla! 1.5 code here
+                $return = $element->attributes( $name );
+            }
+            return $return;
+		}
+		
+		/**
+		 * 
+		 * Enter description here ...
+		 * @return return_type
+		 */
+		function getManifestFile( $manifest )
+		{
+		    $return = null;
+    		if(version_compare(JVERSION,'1.6.0','ge')) {
+                // Joomla! 1.6+ code here
+                $return = $manifest;
+            } else {
+                // Joomla! 1.5 code here
+                $return = $manifest->document;
+            }
+            return $return;
+		}
 	}
 }
