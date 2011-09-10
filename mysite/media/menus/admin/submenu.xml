@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<menu>
+   <link>
+       <name>Items</name>
+       <url>index.php?option=com_mysite&#38;view=items</url>
+   </link>
+   <link>
+       <name>Menus</name>
+       <url>index.php?option=com_mysite&#38;view=menus</url>
+   </link>
+   <link>
+       <name>Configuration</name>
+       <url>index.php?option=com_mysite&#38;view=config</url>
+   </link>
+</menu>

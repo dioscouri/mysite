@@ -1,0 +1,43 @@
+#mysite ul {
+	list-style-type: none;
+}
+
+#mysite>ul>li {
+	margin-bottom: 30px;
+	padding-bottom: 10px;
+}
+
+#mysite>ul,
+#mysite>ul>li>ul,
+#mysite>ul>li>ul>li>ul {
+	padding-left: 0px;
+}
+
+#mysite>ul>li a,
+#mysite>ul>li>ul>li a {
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+#mysite>ul>li a {
+	text-transform: uppercase;
+}
+
+#mysite>ul>li>ul>li a {
+	text-transform: none;
+}
+
+#mysite>ul>li>ul>li>ul>li a {
+	font-weight: normal;
+}
+
+#mysite ul li a:link,
+#mysite ul li a:hover,
+#mysite ul li a:visited  {
+	color: black;
+}
+
+
+#mysite a:active {
+	text-decoration: underline;
+}

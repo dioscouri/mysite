@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+    <layout title="MYSITE ITEMS DEFAULT LAYOUT">
+        <message>
+            <![CDATA[MYSITE ITEMS DEFAULT LAYOUT DESC]]>
+        </message>
+    </layout>
+    <state>
+        <name>MYSITE ITEMS DEFAULT LAYOUT</name>
+        <description>MYSITE ITEMS DEFAULT LAYOUT DESC</description>
+    </state>
+</metadata>
