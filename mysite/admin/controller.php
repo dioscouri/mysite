@@ -37,7 +37,7 @@ class MysiteController extends JController
 		if (array_key_exists('base_path', $config)) {
 			$this->_basePath	= $config['base_path'];
 		} else {
-			$this->_basePath	= JPATH_COMPONENT;
+			$this->_basePath	= JPATH_COMPONENT_ADMINISTRATOR;
 		}
 		
 		$this->set('suffix', 'dashboard');

@@ -34,7 +34,6 @@ $status->templates = array();
  * // TEMPLATES INSTALLATION SECTION 
  * ---------------------------------------------------------------------------------------------
  ***********************************************************************************************/
-// $templates = &$this->manifest->getElementByPath('templates');
 $templates = $dscinstaller->getElementByPath( 'templates' );
 if (is_a($templates, 'JSimpleXMLElement') && count($templates->children())) {
 
