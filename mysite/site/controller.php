@@ -168,7 +168,7 @@ class MysiteController extends JController
             return $this->taskMap;
         } else {
             // Joomla! 1.5 code here
-            $return = $this->_taskMap;
+            return $this->_taskMap;
         }
 	}
 	
@@ -185,7 +185,22 @@ class MysiteController extends JController
             return $this->doTask;
         } else {
             // Joomla! 1.5 code here
-            $return = $this->_doTask;
+            return $this->_doTask;
+        }
+	}
+
+	/**
+	 * Sets the tasks in the controller.
+	 *
+	 */
+	public function setDoTask( $task )
+	{
+    	if(version_compare(JVERSION,'1.6.0','ge')) {
+            // Joomla! 1.6+ code here
+            $this->doTask = $task;
+        } else {
+            // Joomla! 1.5 code here
+            $this->_doTask = $task;
         }
 	}
 	
@@ -194,8 +209,9 @@ class MysiteController extends JController
 	*/
 	function display($cachable=false)
 	{
+		$this->setDoTask( JRequest::getCmd( 'task', 'display' ) );
 		// this sets the default view
-		JRequest::setVar( 'view', JRequest::getVar( 'view', 'products' ) );
+		JRequest::setVar( 'view', JRequest::getVar( 'view', 'items' ) );
 		
 		$document =& JFactory::getDocument();
 
@@ -213,15 +229,13 @@ class MysiteController extends JController
 			// Push the model into the view (as default)
 			$view->setModel($model, true);
 		}
-
 		// Set the layout
 		$view->setLayout($viewLayout);
-
-        // Set the task in the view, so the view knows it is a valid task 
-        if (in_array($this->getTask(), array_keys($this->getTaskMap()) ))
-        {
-            $view->setTask($this->getDoTask());	
-        }
+    // Set the task in the view, so the view knows it is a valid task 
+    if (in_array($this->getTask(), array_keys($this->getTaskMap()) ))
+    {
+      $view->setTask($this->getDoTask());	
+    }
 		
 		$dispatcher = JDispatcher::getInstance();
 		$dispatcher->trigger('onBeforeDisplayComponentMysite', array() );
@@ -229,7 +243,7 @@ class MysiteController extends JController
 		// Display the view
 		if ($cachable && $viewType != 'feed') {
 			global $option;
-			$cache =& JFactory::getCache($option, 'view');
+			$cache =& JFactory::getCache($option, 'view');	
 			$cache->get($view, 'display');
 		} else {
 			$view->display();

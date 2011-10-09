@@ -32,7 +32,7 @@ class MysiteViewItems extends MysiteViewBase
 		
 		// list of items
 			$this->assign('items', $model->getList());
-			
+
 		// form
 			$validate = JUtility::getToken();
 			$form = array();

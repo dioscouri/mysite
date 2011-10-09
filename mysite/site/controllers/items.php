@@ -46,6 +46,7 @@ class MysiteControllerItems extends MysiteController
 	{
 		JRequest::setVar( 'view', $this->get('suffix') );
 		JRequest::setVar( 'layout', 'default' );
+		JRequest::setVar( 'task', 'list' );
 		JRequest::setVar( 'search', false );
 		parent::display();
 	}
