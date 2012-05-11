@@ -1,7 +1,6 @@
 <?php
 /**
- * @version	1.5
- * @package	Mysite
+ * @package	Schools
  * @author 	Dioscouri Design
  * @link 	http://www.dioscouri.com
  * @copyright Copyright (C) 2007 Dioscouri Design. All rights reserved.
@@ -11,10 +10,8 @@
 /** ensure this file is being included by a parent file */
 defined('_JEXEC') or die('Restricted access');
 
-if(version_compare(JVERSION,'1.6.0','ge')) {
-    // Joomla! 1.6+ code here
-    require_once( JPATH_ADMINISTRATOR . '/components/com_mysite/library/grid16.php' );
-} else {
-    // Joomla! 1.5 code here
-    require_once( JPATH_ADMINISTRATOR . '/components/com_mysite/library/grid15.php' );
+JLoader::import( 'com_mysite.views._base', JPATH_SITE.DS.'components' );
+
+class MySiteViewDashboard extends MySiteViewBase  
+{
 }

@@ -23,33 +23,7 @@ class MysiteControllerItems extends MysiteController
 		$this->set('suffix', 'items');
 	}
 	
-    function _setModelState()
-    {
-        $state = parent::_setModelState();      
-        $app = JFactory::getApplication();
-        $model = $this->getModel( $this->get('suffix') );
-        $ns = $this->getNamespace();
-        
-        $state['order']     = $app->getUserStateFromRequest($ns.'.filter_order', 'filter_order', 'tbl.ordering', 'cmd');
-        $state['direction'] = $app->getUserStateFromRequest($ns.'.filter_direction', 'filter_direction', 'ASC', 'word');
-        
-        foreach (@$state as $key=>$value)
-        {
-            $model->setState( $key, $value );   
-        }
-        return $state;
-    }
-	
-	/**
-	 */
-	function display()
-	{
-		JRequest::setVar( 'view', $this->get('suffix') );
-		JRequest::setVar( 'layout', 'default' );
-		JRequest::setVar( 'task', 'list' );
-		JRequest::setVar( 'search', false );
-		parent::display();
-	}
+
 }
 
 ?>

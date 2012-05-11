@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.controller');
 JLoader::import( 'com_mysite.helpers.item', JPATH_ADMINISTRATOR.DS.'components' );
 
-class MysiteController extends JController
+class MysiteController extends DSCControllerAdmin
 {
 	/**
 	 * @var array() instances of Models to be used by the controller

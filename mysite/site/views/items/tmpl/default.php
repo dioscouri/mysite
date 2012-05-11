@@ -1,15 +1,14 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
-$document =& JFactory::getDocument();
-$document->addStyleSheet('media/com_mysite/css/mysite.css');
-$items = $this->items ? $this->items : array(); 
+
 ?>
 
 <div id="mysite">
+	Stuff
     <?php 
         $output = '';
         
-        foreach ($items as $item) 
+        foreach ($this->items as $item) 
         {
             $output .= '<p><a href="'.JRoute::_($item->url_itemid).'">'.$item->title.'</a></p>';
             
@@ -20,10 +19,10 @@ $items = $this->items ? $this->items : array();
             $model->setState( 'direction', 'ASC' );
             $subitems = $model->getList();
 
-            if (count($subitems))
-            {
-                $output .= MysiteHelperItem::print_recoursive($subitems);
-            }
+           // if (count($subitems))
+            //{
+             //   $output .= MysiteHelperItem::print_recoursive($subitems);
+           // }
         }
         
         echo $output;

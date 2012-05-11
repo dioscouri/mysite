@@ -18,8 +18,7 @@ class MysiteViewItems extends MysiteViewBase
 {
 	function _default($tpl='')
 	{
-		JLoader::import( 'com_mysite.library.select', JPATH_ADMINISTRATOR.DS.'components' );
-		JLoader::import( 'com_mysite.library.grid', JPATH_ADMINISTRATOR.DS.'components' );
+		
 		$model = $this->getModel();
 		$model->setState( 'filter_parent', 0);
 		$model->setState( 'filter_enabled', '1' );
@@ -41,4 +40,5 @@ class MysiteViewItems extends MysiteViewBase
 			$form['validate'] = "<input type='hidden' name='{$validate}' value='1' />";
 			$this->assign( 'form', $form );
 	}
+
 }
