@@ -1,6 +1,6 @@
 <?php
 /**
- * @version	0.1
+ * @version	1.5
  * @package	Mysite
  * @author 	Dioscouri Design
  * @link 	http://www.dioscouri.com
@@ -11,11 +11,8 @@
 /** ensure this file is being included by a parent file */
 defined('_JEXEC') or die('Restricted access');
 
+JLoader::import( 'com_mysite.models._base', JPATH_ADMINISTRATOR.DS.'components' );
 
-JLoader::import( 'com_mysite.helpers.item', JPATH_ADMINISTRATOR.DS.'components' );
-
-class MysiteController extends DSCControllerAdmin
+class MysiteModelConfig extends MysiteModelBase 
 {
 }
-
-?>

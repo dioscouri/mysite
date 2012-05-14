@@ -9,13 +9,11 @@
 */
 
 /** ensure this file is being included by a parent file */
-defined('_JEXEC') or die('Restricted access');
+defined( '_JEXEC' ) or die( 'Restricted access' );
 
+JLoader::import( 'com_mysite.library.query', JPATH_ADMINISTRATOR.DS.'components' );
 
-JLoader::import( 'com_mysite.helpers.item', JPATH_ADMINISTRATOR.DS.'components' );
-
-class MysiteController extends DSCControllerAdmin
+class MysiteTable extends DSCTable
 {
+	
 }
-
-?>

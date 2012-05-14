@@ -14,9 +14,6 @@ defined('_JEXEC') or die('Restricted access');
 if ( !class_exists('Mysite') ) 
     JLoader::register( "Mysite", JPATH_ADMINISTRATOR.DS."components".DS."com_mysite".DS."defines.php" );
 
-// before executing any tasks, check the integrity of the installation
-Mysite::getClass( 'MysiteHelperDiagnostics', 'helpers.diagnostics' )->checkInstallation();
-
 // Require the base controller
 Mysite::load( 'MysiteController', 'controller' );
 
