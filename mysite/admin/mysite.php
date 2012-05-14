@@ -25,11 +25,18 @@ if (!Mysite::load( 'MysiteController'.$controller, "controllers.$controller" ))
 if (empty($controller))
 {
     // redirect to default
-    $redirect = "index.php?option=com_mysite&view=items";
+	$default_controller = new MysiteController();
+	$redirect = "index.php?option=com_mysite&view=" . $default_controller->default_view;
     $redirect = JRoute::_( $redirect, false );
     JFactory::getApplication()->redirect( $redirect );
 }
-    
+
+$doc = JFactory::getDocument();
+$uri = JURI::getInstance();
+$js = "var com_mysite = {};\n";
+$js.= "com_mysite.jbase = '".$uri->root()."';\n";
+$doc->addScriptDeclaration($js);
+
 // load the plugins
 JPluginHelper::importPlugin( 'mysite' );
 
@@ -37,8 +44,16 @@ JPluginHelper::importPlugin( 'mysite' );
 $classname = 'MysiteController'.$controller;
 $controller = Mysite::getClass( $classname );
     
+// ensure a valid task exists
+$task = JRequest::getVar('task');
+if (empty($task))
+{
+    $task = 'display';  
+}
+JRequest::setVar( 'task', $task );
+
 // Perform the requested task
-$controller->execute( JRequest::getVar( 'task' ) );
+$controller->execute( $task );
 
 // Redirect if set by the controller
 $controller->redirect();

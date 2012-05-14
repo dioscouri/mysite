@@ -11,11 +11,14 @@
 /** ensure this file is being included by a parent file */
 defined('_JEXEC') or die('Restricted access');
 
-
 JLoader::import( 'com_mysite.helpers.item', JPATH_ADMINISTRATOR.DS.'components' );
 
 class MysiteController extends DSCControllerAdmin
 {
+    /**
+    * default view
+    */
+    public $default_view = 'items';
 }
 
 ?>

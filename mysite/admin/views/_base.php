@@ -21,16 +21,12 @@ class MysiteViewBase extends DSCViewAdmin
 	 */
 	function display($tpl=null)
 	{
-	
-		
         Mysite::load( 'MysiteUrl', 'library.url' );
         Mysite::load( 'MysiteSelect', 'library.select' );
         Mysite::load( 'DSCGrid', 'library.grid' );
         Mysite::load( 'MysiteMenu', 'library.menu' );
-                
-      
-			parent::display($tpl);
-	
+        
+		parent::display($tpl);
 	}
 
 	

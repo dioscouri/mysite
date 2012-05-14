@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS `#__mysite_config` (
   `config_name` VARCHAR(255) NOT NULL ,
   `value` TEXT NOT NULL ,
   PRIMARY KEY (`config_id`) )
-TYPE=MyISAM 
+ENGINE=MyISAM 
 DEFAULT CHARACTER SET utf8;
 
 CREATE TABLE IF NOT EXISTS `#__mysite_items` (
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `#__mysite_items` (
   `priority` CHAR(3) default '',
   `menutype` VARCHAR(75) NOT NULL ,
   PRIMARY KEY (`item_id`) )
-TYPE=MyISAM 
+ENGINE=MyISAM 
 DEFAULT CHARACTER SET utf8;
 
 CREATE TABLE IF NOT EXISTS `#__mysite_menus` (
@@ -31,5 +31,5 @@ CREATE TABLE IF NOT EXISTS `#__mysite_menus` (
   `ordering` INT(11) NOT NULL ,
   `description` VARCHAR(255) NOT NULL default '',
   PRIMARY KEY (`menu_id`) )
-TYPE=MyISAM 
+ENGINE=MyISAM 
 DEFAULT CHARACTER SET utf8;
