@@ -14,7 +14,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 $thisextension = strtolower( "com_mysite" );
 $thisextensionname = substr ( $thisextension, 4 );
 
-JLoader::import( 'com_mysite.library.dscinstaller', JPATH_ADMINISTRATOR.DS.'components' );
+JLoader::import( 'dioscouri.library.dscinstaller', '/libraries/' );
 $dscinstaller = new dscInstaller();
 $dscinstaller->thisextension = $thisextension;
 $dscinstaller->manifest = $this->manifest;
@@ -65,11 +65,11 @@ if ( (is_a($templates, 'JSimpleXMLElement') || is_a( $templates, 'JXMLElement'))
 		if ($result) 
 		{
 			$alt = JText::_( "Installed" );
-			$mstatus = "<img src='images/tick.png' border='0' alt='{$alt}' />";
+			$mstatus = "<img src='/media/dioscouri/images/tick.png' border='0' alt='{$alt}' />";
 		} else {
 			$alt = JText::_( "Failed" );
 			$error = $dscInstaller->getError();
-			$mstatus = "<img src='images/publish_x.png' border='0' alt='{$alt}' />";
+			$mstatus = "<img src='/media/dioscouri/images/publish_x.png' border='0' alt='{$alt}' />";
 			$mstatus .= " - ".$error;
 		}
 		
@@ -130,11 +130,11 @@ if ( (is_a($modules, 'JSimpleXMLElement') || is_a( $modules, 'JXMLElement')) && 
 				$database->query();
 			}
 			$alt = JText::_( "Installed" );
-			$mstatus = "<img src='images/tick.png' border='0' alt='{$alt}' />";
+			$mstatus = "<img src='/media/dioscouri/images/tick.png' border='0' alt='{$alt}' />";
 		} else {
 			$alt = JText::_( "Failed" );
 			$error = $dscInstaller->getError();
-			$mstatus = "<img src='images/publish_x.png' border='0' alt='{$alt}' />";
+			$mstatus = "<img src='/media/dioscouri/images/publish_x.png' border='0' alt='{$alt}' />";
 			$mstatus .= " - ".$error;
 		}
 		
@@ -180,11 +180,11 @@ if ( (is_a($plugins, 'JSimpleXMLElement') || is_a( $plugins, 'JXMLElement')) && 
 		// track the message and status of installation from dscInstaller
 		if ($result) {
 			$alt = JText::_( "Installed" );
-			$pstatus = "<img src='images/tick.png' border='0' alt='{$alt}' />";	
+			$pstatus = "<img src='/media/dioscouri/images/tick.png' border='0' alt='{$alt}' />";	
 		} else {
 			$alt = JText::_( "Failed" );
 			$error = $dscInstaller->getError();
-			$pstatus = "<img src='images/publish_x.png' border='0' alt='{$alt}' /> ";
+			$pstatus = "<img src='/media/dioscouri/images/publish_x.png' border='0' alt='{$alt}' /> ";
 			$pstatus .= " - ".$error;	
 		}
 
@@ -224,7 +224,7 @@ $rows = 0;
 	<tbody>
 		<tr class="row0">
 			<td class="key" colspan="2"><?php echo JText::_( $thisextension ); ?></td>
-			<td class="key"><center><?php $alt = JText::_('Installed'); echo "<img src='images/tick.png' border='0' alt='{$alt}' />"; ?></center></td>
+			<td class="key"><center><?php $alt = JText::_('Installed'); echo "<img src='/media/dioscouri/images/tick.png' border='0' alt='{$alt}' />"; ?></center></td>
 		</tr>
 <?php if (count($status->modules)) : ?>
 		<tr>
