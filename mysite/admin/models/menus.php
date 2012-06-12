@@ -34,15 +34,8 @@ class MysiteModelMenus extends MysiteModelBase
     		$query->where('tbl.enabled = '.$filter_enabled);
     	}
     }
-    
-	function getTable()
-	{
-		JTable::addIncludePath( JPATH_ADMINISTRATOR.DS.'components'.DS.'com_mysite'.DS.'tables' );
-		$table = JTable::getInstance( 'Menus', 'MysiteTable' );
-		return $table;
-	}
 	
-	public function getList()
+	public function getList($refresh = false)
 	{
 		$db = JFactory::getDBO();
     	$db->setQuery( 'SELECT * FROM #__menu_types ORDER BY id' );

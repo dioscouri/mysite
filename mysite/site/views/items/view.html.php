@@ -30,7 +30,7 @@ class MysiteViewItems extends MysiteViewBase
 			$this->assign( 'pagination', $model->getPagination() );
 		
 		// list of items
-			$this->assign('items', $model->getList());
+			$this->assign('items', $model->getList(true));
 
 		// form
 			$validate = JUtility::getToken();

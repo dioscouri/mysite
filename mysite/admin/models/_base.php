@@ -13,5 +13,9 @@ defined('_JEXEC') or die('Restricted access');
 
 class MysiteModelBase extends DSCModel
 {
-    
+    public function getTable($name='', $prefix='MysiteTable', $options = array())
+    {
+        JTable::addIncludePath( JPATH_ADMINISTRATOR . '/components/com_mysite/tables' );
+        return parent::getTable($name, $prefix, $options);
+    }
 }

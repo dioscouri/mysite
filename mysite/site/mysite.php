@@ -31,10 +31,23 @@ if (!Mysite::load( 'MysiteController'.$controller, "controllers.$controller", $o
 if (empty($controller))
 {
     // redirect to default
-    $redirect = "index.php?option=com_mysite&view=dashboard";
+    $default_controller = new MysiteController();
+    $redirect = "index.php?option=com_mysite&view=" . $default_controller->default_view;
     $redirect = JRoute::_( $redirect, false );
     JFactory::getApplication()->redirect( $redirect );
 }
+
+$doc = JFactory::getDocument();
+$uri = JURI::getInstance();
+$js = "var com_mysite = {};\n";
+$js.= "com_mysite.jbase = '".$uri->root()."';\n";
+$doc->addScriptDeclaration($js);
+
+$parentPath = JPATH_ADMINISTRATOR . '/components/com_mysite/helpers';
+DSCLoader::discover('MysiteHelper', $parentPath, true);
+
+$parentPath = JPATH_ADMINISTRATOR . '/components/com_mysite/library';
+DSCLoader::discover('Mysite', $parentPath, true);
     
 // load the plugins
 JPluginHelper::importPlugin( 'mysite' );

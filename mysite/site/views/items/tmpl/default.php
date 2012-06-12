@@ -4,7 +4,6 @@ defined('_JEXEC') or die('Restricted access');
 ?>
 
 <div id="mysite">
-	Stuff
     <?php 
         $output = '';
         
@@ -19,10 +18,10 @@ defined('_JEXEC') or die('Restricted access');
             $model->setState( 'direction', 'ASC' );
             $subitems = $model->getList();
 
-           // if (count($subitems))
-            //{
-             //   $output .= MysiteHelperItem::print_recoursive($subitems);
-           // }
+            if (count($subitems))
+            {
+                $output .= MysiteHelperItem::print_recoursive($subitems);
+            }
         }
         
         echo $output;

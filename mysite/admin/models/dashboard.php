@@ -15,7 +15,7 @@ JLoader::import( 'com_mysite.models._base', JPATH_ADMINISTRATOR.DS.'components' 
 
 class MysiteModelDashboard extends MysiteModelBase 
 {
-	function getTable()
+	public function getTable($name='', $prefix='MysiteTable', $options = array())
 	{
 		JTable::addIncludePath( JPATH_ADMINISTRATOR.DS.'components'.DS.'com_mysite'.DS.'tables' );
 		$table = JTable::getInstance( 'Config', 'MysiteTable' );

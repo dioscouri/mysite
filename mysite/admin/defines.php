@@ -11,157 +11,76 @@ defined('_JEXEC') or die('Restricted access');
 
 class Mysite extends DSC
 {
-    static $_version 		= '0.6.0';
+    protected $_name = 'mysite';
+    static $_version 		= '1.0';
+    static $_build          = 'r100';
+    static $_versiontype    = 'community';
     static $_copyrightyear 	= '2012';
-    static $_min_php        = '5.2';
+    static $_min_php		= '5.2';
     
+	var $show_linkback						= '1';
+	var $page_tooltip_dashboard_disabled	= '0';
+	var $page_tooltip_config_disabled		= '0';
+	var $page_tooltip_tools_disabled		= '0';
+    var $tree_depth                         = '0';
+    var $change_frequency                   = '0';
+    var $priority                           = '0';
     
     /**
-     * Get the copyright year
+     * Returns the query
+     * @return string The query to be used to retrieve the rows from the database
      */
-    public static function getCopyrightYear()
+    public function _buildQuery()
     {
-        return self::$_copyrightyear;
+        $query = "SELECT * FROM #__mysite_config";
+        return $query;
     }
-
-
+    
     /**
-     * Method to intelligently load class files in the Mysite framework
+     * Get component config
+     *
+     * @acces	public
+     * @return	object
+     */
+    public static function getInstance()
+    {
+        static $instance;
+    
+        if (!is_object($instance)) {
+            $instance = new Mysite();
+        }
+    
+        return $instance;
+    }
+    
+    /**
+     * Intelligently loads instances of classes in framework
+     *
+     * Usage: $object = Mysite::getClass( 'MysiteHelperCarts', 'helpers.carts' );
+     * Usage: $suffix = Mysite::getClass( 'MysiteHelperCarts', 'helpers.carts' )->getSuffix();
+     * Usage: $categories = Mysite::getClass( 'MysiteSelect', 'select' )->category( $selected );
+     *
+     * @param string $classname   The class name
+     * @param string $filepath    The filepath ( dot notation )
+     * @param array  $options
+     * @return object of requested class (if possible), else a new JObject
+     */
+    public static function getClass( $classname, $filepath='controller', $options=array( 'site'=>'admin', 'type'=>'components', 'ext'=>'com_mysite' )  )
+    {
+        return parent::getClass( $classname, $filepath, $options  );
+    }
+    
+    /**
+     * Method to intelligently load class files in the framework
      *
      * @param string $classname   The class name
      * @param string $filepath    The filepath ( dot notation )
      * @param array  $options
      * @return boolean
      */
-    public static function load( $classname, $filepath, $options=array( 'site'=>'admin', 'type'=>'components', 'ext'=>'com_mysite' ), $force = false ) 
+    public static function load( $classname, $filepath='controller', $options=array( 'site'=>'admin', 'type'=>'components', 'ext'=>'com_mysite' ) )
     {
-        $classname = strtolower( $classname );
-    	if(version_compare(JVERSION,'1.6.0','ge')) {
-            // Joomla! 1.6+ code here
-            $classes = JLoader::getClassList();
-        } else {
-            // Joomla! 1.5 code here
-            $classes = JLoader::register();
-        }            
-
-        if ( ( class_exists($classname) || array_key_exists( $classname, $classes ) ) && !$force )  
-        {
-            return true;
-        }
-        
-        static $paths;
-
-        if (empty($paths)) 
-        {
-            $paths = array();
-        }
-        
-        if (empty($paths[$classname]) || !is_file($paths[$classname]))
-        {
-            // find the file and set the path
-            if (!empty($options['base']))
-            {
-                $base = $options['base'];
-            }
-                else
-            {
-                // recreate base from $options array
-                switch ($options['site'])
-                {
-                    case "site":
-                        $base = JPATH_SITE.DS;
-                        break;
-                    default:
-                        $base = JPATH_ADMINISTRATOR.DS;
-                        break;
-                }
-                
-                $base .= (!empty($options['type'])) ? $options['type'].DS : '';
-                $base .= (!empty($options['ext'])) ? $options['ext'].DS : '';
-            }
-            
-            $paths[$classname] = $base.str_replace( '.', DS, $filepath ).'.php';
-        }
-        
-        // if invalid path, return false
-        if (!is_file($paths[$classname]))
-        {
-            return false;
-        }
-        
-        // if not registered, register it
-        if ( !array_key_exists( $classname, $classes ) || $force ) 
-        {
-            JLoader::register( $classname, $paths[$classname] );
-            return true;
-        }
-        return false;
+        return parent::load( $classname, $filepath, $options  );
     }
-    
-   
-    
-	
-	/**
-	 * constructor
-	 * @return void
-	 */
-	function __construct() {
-		parent::__construct();
-
-		$this->setVariables();
-	}
-
-	/**
-	 * Returns the query
-	 * @return string The query to be used to retrieve the rows from the database
-	 */
-	function _buildQuery()
-	{
-		$query = "SELECT * FROM #__mysite_config";
-		return $query;
-	}
-
-	
-	/**
-	 * Set Variables
-	 *
-	 * @acces	public
-	 * @return	object
-	 */
-	function setVariables() {
-		$success = false;
-
-		if ( $data = $this->getData() )
-		{
-			for ($i=0; $i<count($data); $i++)
-			{
-				$title = $data[$i]->config_name;
-				$value = $data[$i]->value;
-				if (isset($title)) {
-					$this->$title = $value;
-				}
-			}
-
-			$success = true;
-		}
-
-		return $success;
-	}
-
-	/**
-	 * Get component config
-	 *
-	 * @acces	public
-	 * @return	object
-	 */
-	public static function getInstance() {
-		static $instance;
-
-		if (!is_object($instance)) {
-			$instance = new Mysite();
-		}
-
-		return $instance;
-	}
 }
 ?>
