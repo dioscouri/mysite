@@ -19,24 +19,5 @@ class MysiteHelperDiagnostics extends DSCHelperDiagnostics
      */
     function checkInstallation() 
     {
-        $functions = array();
-        
-        foreach ($functions as $function)
-        {
-            if (!$this->{$function}())
-            {
-                return $this->redirect( JText::_("COM_MYSITE_".$function."_FAILED") .' :: '. $this->getError(), 'error' );
-            }            
-        }
-    }
-    
-    protected function setCompleted( $fieldname, $value='1' )
-    {
-        JTable::addIncludePath( JPATH_ADMINISTRATOR . '/components/com_mysite/tables' );
-        $config = JTable::getInstance( 'Config', 'MysiteTable' );
-        $config->load( array( 'config_name'=>$fieldname ) );
-        $config->config_name = $fieldname;
-        $config->value = '1';
-        $config->save();
     }
 }

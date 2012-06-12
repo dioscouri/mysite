@@ -1,24 +1,24 @@
 <?php
 /**
- * @version	0.1
- * @package	Mysite
- * @author 	Dioscouri Design
- * @link 	http://www.dioscouri.com
- * @copyright Copyright (C) 2007 Dioscouri Design. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @package		Mysite
+* @copyright	Copyright (C) 2009 DT Design Inc. All rights reserved.
+* @license		GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
+* @link 		http://www.dioscouri.com
 */
 
 /** ensure this file is being included by a parent file */
 defined('_JEXEC') or die('Restricted access');
 
-JLoader::import( 'com_mysite.helpers.item', JPATH_ADMINISTRATOR.DS.'components' );
+jimport('joomla.application.component.model');
 
-class MysiteController extends DSCControllerAdmin
-{
-    /**
-    * default view
-    */
-    public $default_view = 'items';
+class MysiteController extends DSCControllerAdmin {
+
+	public $default_view = 'items';
+
+	var $message = null;
+	var $messagetype = null;
+
+
 }
 
 ?>

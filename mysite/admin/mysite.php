@@ -15,10 +15,12 @@ if ( !class_exists('Mysite') )
     JLoader::register( "Mysite", JPATH_ADMINISTRATOR.DS."components".DS."com_mysite".DS."defines.php" );
 
 // before executing any tasks, check the integrity of the installation
-Mysite::getClass( 'MysiteHelperDiagnostics', 'helpers.diagnostics' )->checkInstallation();
+//Mysite::getClass( 'MysiteHelperDiagnostics', 'helpers.diagnostics' )->checkInstallation();
 
 // Require the base controller
 Mysite::load( 'MysiteController', 'controller' );
+// Require the base controller
+
 
 // Require specific controller if requested
 $controller = JRequest::getWord('controller', JRequest::getVar( 'view' ) );
@@ -33,6 +35,8 @@ if (empty($controller))
     $redirect = JRoute::_( $redirect, false );
     JFactory::getApplication()->redirect( $redirect );
 }
+
+JHTML::_('stylesheet', 'admin.css', 'media/com_mysite/css/');
 
 $doc = JFactory::getDocument();
 $uri = JURI::getInstance();
