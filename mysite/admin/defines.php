@@ -23,8 +23,8 @@ class Mysite extends DSC
 	var $page_tooltip_config_disabled		= '0';
 	var $page_tooltip_tools_disabled		= '0';
     var $tree_depth                         = '0';
-    var $change_frequency                   = '0.5';
-    var $priority                           = '0';
+    var $change_frequency                   = '0';
+    var $priority                           = '0.5';
     
     /**
      * Returns the query

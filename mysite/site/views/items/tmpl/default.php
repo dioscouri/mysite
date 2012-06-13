@@ -9,7 +9,11 @@ defined('_JEXEC') or die('Restricted access');
         
         foreach ($this->items as $item) 
         {
-            $output .= '<p><a href="'.JRoute::_($item->url_itemid).'">'.$item->title.'</a></p>';
+            if (empty($item->url_itemid)) {
+                $output .= '<p>'.$item->title.'</p>';
+            } else {
+                $output .= '<p><a href="'.JRoute::_($item->url_itemid).'">'.$item->title.'</a></p>';
+            }
             
             $model = JModel::getInstance( 'Items', 'MySiteModel' );
             $model->setState( 'filter_parent', $item->item_id);

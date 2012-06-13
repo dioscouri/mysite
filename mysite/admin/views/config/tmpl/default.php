@@ -50,7 +50,7 @@
 								<?php echo JText::_( 'Default priority value' ); ?>
 							</th>
 							<td>
-								<?php echo MysiteSelect::priorities( $this->row->get('priority', '0'), 'priority', null, 'priority', true, 'Priority' ); ?>
+								<?php echo MysiteSelect::priorities( $this->row->get('priority', '0.5'), 'priority', null, 'priority', true, 'Priority' ); ?>
 							</td>
 						</tr>
 						
