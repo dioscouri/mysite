@@ -11,20 +11,54 @@ defined('_JEXEC') or die('Restricted access');
 
 class Mysite extends DSC
 {
-	protected $_name           = 'mysite';	
-    static $_version 		= '0.6.0';
+    protected $_name = 'mysite';
+    static $_version 		= '0.7.0';
+    static $_build          = 'r100';
+    static $_versiontype    = 'community';
     static $_copyrightyear 	= '2012';
-    static $_min_php        = '5.2';
+    static $_min_php		= '5.2';
     
+	var $show_linkback						= '1';
+	var $page_tooltip_dashboard_disabled	= '0';
+	var $page_tooltip_config_disabled		= '0';
+	var $page_tooltip_tools_disabled		= '0';
+    var $tree_depth                         = '0';
+    var $change_frequency                   = '0.5';
+    var $priority                           = '0';
     
+    /**
+     * Returns the query
+     * @return string The query to be used to retrieve the rows from the database
+     */
+    public function _buildQuery()
+    {
+        $query = "SELECT * FROM #__mysite_config";
+        return $query;
+    }
     
-
-     /**
+    /**
+     * Get component config
+     *
+     * @acces	public
+     * @return	object
+     */
+    public static function getInstance()
+    {
+        static $instance;
+    
+        if (!is_object($instance)) {
+            $instance = new Mysite();
+        }
+    
+        return $instance;
+    }
+    
+    /**
      * Intelligently loads instances of classes in framework
      *
-     * Usage: $object = BIllets::getClass( 'BIlletsHelperCarts', 'helpers.carts' );
-     * Usage: $suffix = BIllets::getClass( 'BIlletsHelperCarts', 'helpers.carts' )->getSuffix();
-     * Usage: $categories = BIllets::getClass( 'BIlletsSelect', 'select' )->category( $selected );
+     * Usage: $object = Mysite::getClass( 'MysiteHelperCarts', 'helpers.carts' );
+     * Usage: $suffix = Mysite::getClass( 'MysiteHelperCarts', 'helpers.carts' )->getSuffix();
+     * Usage: $categories = Mysite::getClass( 'MysiteSelect', 'select' )->category( $selected );
      *
      * @param string $classname   The class name
      * @param string $filepath    The filepath ( dot notation )
@@ -48,48 +82,5 @@ class Mysite extends DSC
     {
         return parent::load( $classname, $filepath, $options  );
     }
-    
-   
-    
-	
-	/**
-	 * constructor
-	 * @return void
-	 */
-	function __construct() {
-		parent::__construct();
-
-		$this->setVariables();
-	}
-
-	/**
-	 * Returns the query
-	 * @return string The query to be used to retrieve the rows from the database
-	 */
-	function _buildQuery()
-	{
-		$query = "SELECT * FROM #__mysite_config";
-		return $query;
-	}
-
-	
-	/**
-	 * Get component config
-	 *
-	 * @acces	public
-	 * @return	object
-	 */
-	 public static function getInstance()
-	{
-		static $instance;
-
-		if (!is_object($instance))
-		{
-			$instance = new Mysite();
-		}
-
-		return $instance;
-		
-	}
 }
 ?>
