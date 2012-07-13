@@ -11,7 +11,9 @@
 /** ensure this file is being included by a parent file */
 defined('_JEXEC') or die('Restricted access');
 
-JLoader::import( 'com_mysite.models._base', JPATH_ADMINISTRATOR.DS.'components' );
+
+Mysite::load('MysiteModelBase','models.base');
+
 jimport('joomla.utilities.date');
 
 class MysiteHelperItem extends JObject
@@ -74,7 +76,7 @@ class MysiteHelperItem extends JObject
     {
     	$output = '';
 
-    	$db =& JFactory::getDBO();
+    	$db = JFactory::getDBO();
     	$query = "SELECT value FROM #__mysite_config WHERE config_name='priority'";
 		$db->setQuery($query);
 		$default_priority = $db->loadResult();
@@ -84,7 +86,7 @@ class MysiteHelperItem extends JObject
 		$default_change_frequency = $db->loadResult();
 
 		$app    = JApplication::getInstance('site');
-        $router = &$app->getRouter();
+        $router = $app->getRouter();
 		foreach ($items as $item) 
 		{
 			// Is the URL internal or external?

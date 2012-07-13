@@ -11,8 +11,6 @@
 /** ensure this file is being included by a parent file */
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-JLoader::import( 'com_mysite.library.query', JPATH_ADMINISTRATOR.DS.'components' );
-
 class MysiteTable extends DSCTable
 {
 	

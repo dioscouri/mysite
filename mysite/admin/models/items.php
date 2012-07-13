@@ -11,7 +11,7 @@
 /** ensure this file is being included by a parent file */
 defined('_JEXEC') or die('Restricted access');
 
-JLoader::import( 'com_mysite.models._base', JPATH_ADMINISTRATOR.DS.'components' );
+Mysite::load('MysiteModelBase','models.base');
 
 class MysiteModelItems extends MysiteModelBase 
 {
@@ -68,9 +68,18 @@ class MysiteModelItems extends MysiteModelBase
 	   
     }
     
-    public function getList($refresh = false)
-    {
-        $items = parent::getList($refresh);
+    function getTable()
+	{
+		JTable::addIncludePath( JPATH_ADMINISTRATOR.DS.'components'.DS.'com_mysite'.DS.'tables' );
+		$table = JTable::getInstance( 'Items', 'MysiteTable' );
+		return $table;
+	}
+	
+	public function getList()
+	{
+		
+		
+		$items = parent::getList(); 	
 		foreach(@$items as $item)
 		{
 			$item->link = 'index.php?option=com_mysite&controller=items&view=items&task=edit&id='.$item->item_id;

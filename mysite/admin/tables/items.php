@@ -11,8 +11,8 @@
 /** ensure this file is being included by a parent file */
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-JLoader::import( 'com_mysite.tables._base', JPATH_ADMINISTRATOR.DS.'components' );
-JLoader::import( 'com_mysite.helpers.item', JPATH_ADMINISTRATOR.DS.'components' );
+Mysite::load('MysiteTable','tables.base');
+
 
 class MysiteTableItems extends MysiteTable 
 {

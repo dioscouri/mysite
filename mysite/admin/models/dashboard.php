@@ -11,11 +11,11 @@
 /** ensure this file is being included by a parent file */
 defined('_JEXEC') or die('Restricted access');
 
-JLoader::import( 'com_mysite.models._base', JPATH_ADMINISTRATOR.DS.'components' );
+Mysite::load('MysiteModelBase','models.base');
 
 class MysiteModelDashboard extends MysiteModelBase 
 {
-	public function getTable($name='', $prefix='MysiteTable', $options = array())
+	function getTable()
 	{
 		JTable::addIncludePath( JPATH_ADMINISTRATOR.DS.'components'.DS.'com_mysite'.DS.'tables' );
 		$table = JTable::getInstance( 'Config', 'MysiteTable' );
