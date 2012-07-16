@@ -12,11 +12,11 @@ defined('_JEXEC') or die('Restricted access');
 class Mysite extends DSC
 {
     protected $_name = 'mysite';
-    static $_version 		= '0.7.0';
-    static $_build          = 'r100';
-    static $_versiontype    = 'community';
+    static $_version 		= '0.8.0';
+    static $_build          = '';
+    static $_versiontype    = '';
     static $_copyrightyear 	= '2012';
-    static $_min_php		= '5.2';
+    static $_min_php		= '5.3';
     
 	var $show_linkback						= '1';
 	var $page_tooltip_dashboard_disabled	= '0';
