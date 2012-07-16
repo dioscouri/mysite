@@ -13,21 +13,5 @@ defined('_JEXEC') or die('Restricted access');
 
 class MysiteViewBase extends DSCViewAdmin
 {
-	/**
-	 * Displays a layout file 
-	 * 
-	 * @param unknown_type $tpl
-	 * @return unknown_type
-	 */
-	function display($tpl=null)
-	{
-        Mysite::load( 'MysiteUrl', 'library.url' );
-        Mysite::load( 'MysiteSelect', 'library.select' );
-        Mysite::load( 'DSCGrid', 'library.grid' );
-        Mysite::load( 'MysiteMenu', 'library.menu' );
-        
-		parent::display($tpl);
-	}
-
 	
 }

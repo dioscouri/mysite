@@ -11,26 +11,10 @@
 /** ensure this file is being included by a parent file */
 defined('_JEXEC') or die('Restricted access');
 
-JLoader::import( 'com_mysite.views._base', JPATH_ADMINISTRATOR.DS.'components' );
+Mysite::load('MysiteViewBase','views.base');
 
 class MysiteViewConfig extends MysiteViewBase 
 {
-	/**
-	 * 
-	 * @param $tpl
-	 * @return unknown_type
-	 */
-	function getLayoutVars($tpl=null) 
-	{
-		$layout = $this->getLayout();
-		switch(strtolower($layout))
-		{
-			case "default":
-			default:
-				$this->_default($tpl);
-			  break;
-		}
-	}
 	
 	/**
 	 * 

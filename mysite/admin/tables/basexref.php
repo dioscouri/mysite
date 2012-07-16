@@ -1,6 +1,6 @@
 <?php
 /**
- * @version	1.5
+ * @version	0.1
  * @package	Mysite
  * @author 	Dioscouri Design
  * @link 	http://www.dioscouri.com
@@ -9,10 +9,10 @@
 */
 
 /** ensure this file is being included by a parent file */
-defined('_JEXEC') or die('Restricted access');
+defined( '_JEXEC' ) or die( 'Restricted access' );
 
 
-class MysiteMenu extends DSCMenu
+class MysiteTableXref extends DSCTableXref
 {
-   
+	
 }

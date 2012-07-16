@@ -149,8 +149,8 @@ class MysiteControllerMenus extends MysiteController
             $title_key = 'title';
         } else {
             // Joomla! 1.5 code here
-             $parent_key = 'parent';
-            $title_key = 'name';
+             $parent_key = 'parent_id';
+            $title_key = 'title';
         }
         
         // if a menu is enabled after being disabled, first regenerate items for it
